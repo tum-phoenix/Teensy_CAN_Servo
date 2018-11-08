@@ -36,6 +36,8 @@ uint8_t PWMServo::attachedB = 0;
 uint8_t PWMServo::attachedC = 0;
 #endif
 
+#define FRAMELENGTH 10000L // 5000 us
+
 void PWMServo::seizeTimer1()
 {
   uint8_t oldSREG = SREG;
@@ -47,9 +49,7 @@ void PWMServo::seizeTimer1()
   ;
   OCR1A = 3000;
   OCR1B = 3000;
-  ICR1 = clockCyclesPerMicrosecond()*(10000L/8);  // 20000 uS is a bit fast for the refresh, 20ms, but 
-                                                  // it keeps us from overflowing ICR1 at 20MHz clocks
-                                                  // That "/8" at the end is the prescaler.
+  ICR1 = clockCyclesPerMicrosecond()*(FRAMELENGTH/8);
 #if defined(__AVR_ATmega8__)
   TIMSK &= ~(_BV(TICIE1) | _BV(OCIE1A) | _BV(OCIE1B) | _BV(TOIE1) );
 #else
