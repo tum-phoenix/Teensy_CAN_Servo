@@ -62,9 +62,9 @@ class PWMServo
 {
   private:
     uint8_t pin;
-    uint8_t angle;       // in degrees
-    uint8_t min16;       // minimum pulse, 16uS units  (default is 34)
-    uint8_t max16;       // maximum pulse, 16uS units, 0-4ms range (default is 150)
+    float angle;       // in degrees
+    float min16;       // minimum pulse, 16uS units  (default is 34)
+    float max16;       // maximum pulse, 16uS units, 0-4ms range (default is 150)
 #if defined(__AVR__)
     static void seizeTimer1();
     static void releaseTimer1();
@@ -86,7 +86,7 @@ class PWMServo
                              // position the servo until a subsequent write() happens
                              // Only works for 9 and 10.
     void detach();
-    void write(int angleArg); // specify the angle in degrees, 0 to 180
+    void write(float angleArg); // specify the angle in degrees, 0 to 180
     uint8_t read() { return angle; }
     uint8_t attached();
 };
