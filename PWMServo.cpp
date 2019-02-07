@@ -220,4 +220,28 @@ uint8_t PWMServo::attached()
 	return (attachedpins[pin >> 5] & (1 << (pin & 31))) ? 1 : 0;
 }
 
+void PWMServo::writeMicros(float usArg)
+{
+	//Serial.printf("write, pin=%d, angle=%d\n", pin, angleArg);
+	if (pin >= NUM_DIGITAL_PINS) return;
+	if (usArg < min16) usArg = min16;
+	if (usArg > max16) usArg = max16;
+	angle = map(usArg, min16, max16, 0., 180.);
+	uint32_t duty = (uint32_t)(usArg / PULSE_LEN * (float)(1<<PWM_RES));
+	//float usec = (float)((max16 - min16)<<4) * ((float)angle / 180.0f) + (float)(min16<<4);
+	//uint32_t duty = (int)(usec / 20000.0f * 4096.0f);
+	//Serial.printf("angle=%d, usec=%.2f, us=%.2f, duty=%d, min=%d, max=%d\n",
+		//angle, usec, (float)us / 256.0f, duty, min16<<4, max16<<4);
+#if TEENSYDUINO >= 137
+	noInterrupts();
+	uint32_t oldres = analogWriteResolution(PWM_RES);
+	analogWrite(pin, duty);
+	analogWriteResolution(oldres);
+	interrupts();
+#else
+	analogWriteResolution(12);
+	analogWrite(pin, duty);
+#endif
+}
+
 #endif
