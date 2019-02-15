@@ -190,10 +190,10 @@ uint8_t PWMServo::attach(int pinArg, int min, int max)
 	return 1;
 }
 
-uint8_t PWMServo::detach(int pinArg)
+uint8_t PWMServo::detach()
 {
-	if (pinArg < 0 || pinArg >= NUM_DIGITAL_PINS) return 0;
-	if (!digitalPinHasPWM(pinArg)) return 0;
+	if (pin < 0 || pin >= NUM_DIGITAL_PINS) return 0;
+	if (!digitalPinHasPWM(pin)) return 0;
 	digitalWrite(pin, LOW);
 	pinMode(pin, INPUT);
 	attachedpins[pin >> 5] &= ~(1 << (pin & 31));
