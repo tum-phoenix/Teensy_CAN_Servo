@@ -173,6 +173,7 @@ PWMServo::PWMServo() : pin(255), angle(NO_ANGLE) {}
 #define FREQ_HZ 50.
 #define PULSE_LEN (1000000./FREQ_HZ)
 #define PWM_RES 14
+
 uint8_t PWMServo::attach(int pinArg, int min, int max)
 {
 	//Serial.printf("attach, pin=%d, min=%d, max=%d\n", pinArg, min, max);
@@ -186,6 +187,16 @@ uint8_t PWMServo::attach(int pinArg, int min, int max)
 	digitalWrite(pin, LOW);
 	pinMode(pin, OUTPUT);
 	attachedpins[pin >> 5] |= (1 << (pin & 31));
+	return 1;
+}
+
+uint8_t PWMServo::detach(int pinArg)
+{
+	if (pinArg < 0 || pinArg >= NUM_DIGITAL_PINS) return 0;
+	if (!digitalPinHasPWM(pinArg)) return 0;
+	digitalWrite(pin, LOW);
+	pinMode(pin, INPUT);
+	attachedpins[pin >> 5] &= ~(1 << (pin & 31));
 	return 1;
 }
 
